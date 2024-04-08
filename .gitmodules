@@ -1,3 +1,6 @@
 [submodule "key/prerendered/LPX"]
 	path = key/prerendered/LPX
 	url = https://github.com/levpopov/LPX.git
+[submodule "dactyl-deskmount"]
+	path = dactyl-deskmount
+	url = https://github.com/nickcoutsos/dactyl-deskmount

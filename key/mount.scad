@@ -5,6 +5,7 @@
  */
 
 use <../settings.scad>;
+use <../dactyl-deskmount/geometry.scad>
 
 fn=60;
 
@@ -231,6 +232,30 @@ module key_mount_side_bounding_box(x=0,y=0,header=false,footer=false,leftside=fa
   } else {
     position_key_mount_corner(x=-1,y=y,header=header,footer=footer,leftside=leftside,rightside=rightside)
       cube([outerdia() + optional_sum(rightside,leftside), overlap, thickness()]);
+  }
+}
+
+module key_mount_sidescrew_bounding_box(x=0,y=0,header=false,footer=false,leftside=false,rightside=false) {
+  assert(((x==1 || x==-1) && y==0) || ((y==1 || y==-1) && x ==0));
+  outer = 11;
+  depth = 4;
+  overlap = epsilon();
+
+  if (!is_undef(x) && x != 0) {
+    
+    position_key_mount_corner(x=x,y=-1,header=header,footer=footer,leftside=leftside,rightside=rightside) {
+        hull(){
+      cube([overlap, outerdia() + optional_sum(header,footer), thickness()]);
+      translate([0,(outerdia() + optional_sum(header,footer))/2,0]) rotate([0, 0, 90]) arc(180, r1=outer/2, r2=0, h=thickness());
+        }
+    }
+  } else {
+    position_key_mount_corner(x=-1,y=y,header=header,footer=footer,leftside=leftside,rightside=rightside) {
+        hull() {
+      cube([outerdia() + optional_sum(rightside,leftside), overlap, thickness()]);
+            translate([(outerdia() + optional_sum(header,footer))/2,0,0]) rotate([0,0,180]) arc(180, r1=outer/2, r2=0, h=thickness());
+        }
+    }
   }
 }
 

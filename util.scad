@@ -262,6 +262,48 @@ module mount_teensy20pp(position=[0,0,0], rotation=[0,0,0], spacer=2, walls=2, d
 
 *mount_teensy20pp() translate([0,0,2])  cube([50,75,4], true);
 
+module mount_promicro(position=[0,0,0], rotation=[0,0,0], spacer=2, walls=2, diode=false) {
+  slop =.1;
+  bar = [18.2+slop, 33.27+slop, 8+spacer];
+  epsilon=.1;
+
+  outer = bar+[2*walls,2*walls,0];
+
+  if ($preview) {
+
+    translate(position) rotate(rotation) let(z1=18.5,z2=23-18.5) translate([0,0,spacer]) {
+      color("black", .2) translate([0,0,z1/2]) cube(bar + [0,0,z1 - bar.z], true);
+      color("blue", .2) translate([0,0,z1+z2/2]) cube(bar + [0,0,z2 - bar.z], true);
+    }
+  }
+
+  pitch=2.54;
+  difference() {
+    union(){
+      children();
+
+      translate(position) rotate(rotation)
+	translate([0,0,(outer.z/2)]) cube(outer, true);
+    }
+
+    translate(position) rotate(rotation) {
+      // cavity for promicro
+      translate([0,0,(bar.z/2 + spacer + epsilon)]) cube(bar+[0, 0, epsilon*2], true);
+
+      // for pin headers
+      rotational_clone() translate([bar.x/2-1, 0, spacer]) cube([2, bar.y, 2],true);
+        
+      // usb
+      translate([0, bar.y/2, bar.z/2+spacer+7/2]) cube([7.8, 40, bar.z+7],true);
+
+      // for VBUS detect shottky
+      if (diode) translate([0,(pitch/2)+(4*pitch)+(pitch*3/2),spacer]) cube([8,pitch*3,4],true);
+    }
+  }
+}
+
+*mount_promicro() translate([0,0,2])  cube([50,75,4], true);
+
 module mount_trrs(position=[0,0,0], rotation=[0,0,0], spacer=2, walls=2) {
   slop = .1;
   bar = [6.5+slop, 12.5+slop, 8 + spacer];
